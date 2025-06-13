@@ -21,7 +21,7 @@ char pass[] = "";
 #define SERVO_LOW_PIN D4     // Servo 360 for roof control (second servo)
 #define DC_PIN D6            // Relay for water pump
 #define LED_PIN D5           // Relay for LED
-#define LIGHT_SENSOR_PIN D0  // Light sensor
+#define LIGHT_SENSOR_PIN D0 // Light sensor
 #define SOIL_SENSOR_PIN A0   // Soil moisture sensor
 #define DHT_PIN D7           // DHT11 sensor
 
@@ -75,6 +75,11 @@ void setup() {
 void loop() {
   Blynk.run();  // Handle Blynk communication
   timer.run();  // Run timer for sensor updates
+  
+  //digitalWrite(D5, !digitalRead(D0));
+  //Serial.println(digitalRead(D0));
+  //delay(500);
+  //roofMove(1); 
 
   updateRoofMovement();
 }
@@ -151,12 +156,12 @@ BLYNK_WRITE(V8) {
 // === Sensor and Actuator Functions ===
 // Update LED state based on light sensor (auto mode)
 void updateLedBasedOnLightSensor() {
-  if (autoLightMode) {
+  if (autoLightMode) { // LIGHT_SENSOR_PIN = 0 -> sáng 
     bool lightState = digitalRead(LIGHT_SENSOR_PIN);
-    digitalWrite(LED_PIN, !lightState);   // Turn on LED if dark
-    Blynk.virtualWrite(V0, !lightState);  // Update Blynk UI
+    digitalWrite(LED_PIN, lightState);   // Turn on LED if dark
+    Blynk.virtualWrite(V0, lightState);  // Update Blynk UI
     Serial.print("Light sensor: "); 
-    Serial.println(lightState ? "Light" : "Dark");
+    Serial.println(!lightState ? "Light" : "Dark");
   }
 }
 
@@ -191,8 +196,8 @@ bool isServoHighRunning = false;
 bool isServoLowRunning = false;
 unsigned long servoHighStartTime = 0;
 unsigned long servoLowStartTime = 0;
-unsigned long SERVO_High_DURATION = 3000; // 3 giây
-unsigned long SERVO_Low_DURATION = 3000; // 3 giây
+unsigned long SERVO_HIGH_DURATION = 3000; // 3 giây
+unsigned long SERVO_LOW_DURATION = 3000; // 3 giây
 
 // Read temperature and humidity from DHT sensor
 void updateAirStatus() {
@@ -264,7 +269,7 @@ void updateRoofMovement() {
 }
 
 // Test servo by sweeping (for debugging)
-void servoTest() {
+void servoTTest() {
   servoHigh.writeMicroseconds(1300);  // Rotate CW
   servoLow.writeMicroseconds(1300);   // Rotate CW
   Serial.println("Servo Test: Rotating CW");
