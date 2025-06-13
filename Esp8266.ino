@@ -60,7 +60,7 @@ void setup() {
   Blynk.begin(auth, ssid, pass);
 
   // Setup timer for periodic sensor updates (every 10 seconds)
-  timer.setInterval(1000L, updateSensors);
+  timer.setInterval(500L, updateSensors);
 
   // Ensure initial states
   digitalWrite(DC_PIN, LOW);          // Pump off
@@ -69,6 +69,7 @@ void setup() {
   servoLow.writeMicroseconds(1500);   // Stop servoLow
   Blynk.virtualWrite(V5, 0);          // Set default Slider V5 to Stop
   Blynk.virtualWrite(V8, 0);          // Set default Slider V8 to Stop
+  roofMove(0); 
 }
 
 // === Main Loop ===
@@ -79,7 +80,7 @@ void loop() {
   //digitalWrite(D5, !digitalRead(D0));
   //Serial.println(digitalRead(D0));
   //delay(500);
-  //roofMove(1); 
+  
 
   updateRoofMovement();
 }
